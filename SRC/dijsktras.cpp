@@ -32,12 +32,23 @@ int mindist()
     }
     return min_index;
 }
-
+void printSolution(int dist[], int n)
+{
+    int v = n;
+    printf("Vertex   Distance from Source\n");
+    for (int i = 0; i < v; i++)
+        printf("\t%d \t\t\t\t %d\n", i, dist[i]);
+}
 int dijsktrasalgo()
 {
     int weight = 0;
     int start = 0;
     int end = 0;
+    // store shortest path somewhere in an int
+    // use a bool to check if the node is the shortest path
+    // use mindist function to actually find    the shortest path
+    // update the distances of the nodes
+    // use a priority queue to store the weights
     
 }
 int main(int argc, char *argv[])
