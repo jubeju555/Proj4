@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // dijkstra's.cpp
+=======
+// dijsktras.cpp
+>>>>>>> d28c978 (min distance should be done)
 
 // Main Execution
 
@@ -12,6 +16,7 @@
 #include <climits>
 using namespace std;
 // need something to store weights
+<<<<<<< HEAD
 /*and need something to store graph - lets use a priority queue, since the smallest weight will just be at the top
 we can use like a min heap and keep finding the smallest way to a encompass the "map"
 */
@@ -21,6 +26,16 @@ int mindist()
     set<int> visited;
     vector<int> dist;
     int min = INT_MAX, min_index;
+=======
+/*and need something to store graph - lets use a priority queue, since the smallest weight will just be at the top 
+we can use like a min heap and keep finding the smallest way to a encompass the "map" 
+*/
+// pretty close to geeks4geeks might need to change to queue
+int mindist(){
+  set <int> visited;
+vector <int> dist;  
+int min = INT_MAX, min_index;
+>>>>>>> d28c978 (min distance should be done)
     int verti = 0;
     for (int i = 0; i < verti; i++)
     {
@@ -32,6 +47,7 @@ int mindist()
     }
     return min_index;
 }
+<<<<<<< HEAD
 void printSolution(int dist[], int n)
 {
     int v = n;
@@ -73,3 +89,29 @@ int main(int argc, char *argv[])
     }
     return 0;
 }
+=======
+
+
+int dijsktrasalgo (){
+int weight = 0;
+int start = 0;
+int end = 0;
+
+
+
+
+}
+int main(int argc, char *argv[]) {
+   int weight, n;
+   int graphx, graphy;
+    while(cin >> n){
+    dijsktrasalgo();
+    // cout << "Enter the number of nodes: " << n << endl;
+    cin >> n;
+    cin >> graphx >> graphy;
+
+    }
+    return 0;
+}
+
+>>>>>>> d28c978 (min distance should be done)
