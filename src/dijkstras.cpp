@@ -26,7 +26,7 @@ struct graph {
     set<int> visited;
     vector<int> dist;
     int mindist();
-    int dijsktrasalgo();
+    int dijkstrasalgo();
 };
 
 int graph::mindist()
@@ -54,7 +54,7 @@ void printSolution(int dist[], int n)
         printf("\t%d \t\t\t\t %d\n", i, dist[i]);
 }
 
-int graph::dijsktrasalgo()
+int graph::dijkstrasalgo()
 {
     int weight = 0;
     int start = 0;
@@ -97,6 +97,7 @@ int graph::dijsktrasalgo()
 }
 int main(int argc, char *argv[])
 {
+    graph g;
     int weight, n;
     int graphx, graphy;
     while (cin >> n)
@@ -112,8 +113,10 @@ int main(int argc, char *argv[])
             int weight;
             cin >> node >> weight;
             nodes.push_back(make_pair(node, weight));
+            
         }
         cin >> graphx >> graphy;
+        g.dijkstrasalgo();
     }
     return 0;
 }
