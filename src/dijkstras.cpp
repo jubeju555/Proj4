@@ -20,13 +20,14 @@ we can use like a min heap and keep finding the smallest way to a encompass the 
 */
 // pretty close to geeks4geeks might need to change to queue
 struct graph {
-    int weight;
+    // int weight;
     int node;
-    int v;
+    int v = 1;
     set<int> visited;
     vector<int> dist;
     int mindist();
     int dijkstrasalgo();
+    void printSolution(int dist[], int n);
 };
 
 int graph::mindist()
@@ -46,17 +47,19 @@ int graph::mindist()
 }
 
 
-void printSolution(int dist[], int n)
+void graph::printSolution(int dist[], int n)
 {
-    int v = n;
-    printf("Vertex   Distance from Source\n");
-    for (int i = 0; i < v; i++)
-        printf("\t%d \t\t\t\t %d\n", i, dist[i]);
+  printf("first the final distance, then hopefully the visited nodes\n");
+  for (int i = 0; i < n; i++)
+  {
+    printf("%d", dist[i]);
+    printf("%d", visited.count(i));
+  }
 }
 
 int graph::dijkstrasalgo()
 {
-    int weight = 0;
+    int currentweight = 0;
     int start = 0;
     int end = 0;
     priority_queue<int> minqueue;
@@ -67,14 +70,14 @@ int graph::dijkstrasalgo()
     // update the distances of the nodes
     // use a priority queue to store the weights
     
-    // Initialize distances to all vertices as infinite and distance to the source as 0
+    // set distance of verts to infinity, then set initial distance to 0
     dist.resize(v, INT_MAX);
     dist[start] = 0;
 
-    // Find shortest path for all vertices
+    // ideally finds the shortest path
     for (int count = 0; count < v - 1; count++)
     {
-        // Pick the minimum distance vertex from the set of vertices not yet processed
+        // use mindist to find smallest distance of verticies that havent been visited, then set that to current index
         int u = mindist();
         visited.insert(u);
 
@@ -83,9 +86,9 @@ int graph::dijkstrasalgo()
         {
             // Update dist[i] if it is not in visited, there is an edge from u to i,
             // and total weight of path from start to i through u is smaller than current value of dist[i]
-            if (!visited.count(i) && dist[u] != INT_MAX && dist[u] + weight < dist[i])
+            if (!visited.count(i) && dist[u] != INT_MAX && dist[u] + currentweight < dist[i])
             {
-                dist[i] = dist[u] + weight;
+                dist[i] = dist[u] + currentweight;
             }
         }
     }
@@ -95,6 +98,7 @@ int graph::dijkstrasalgo()
 
     
 }
+// has to be redone
 int main(int argc, char *argv[])
 {
     graph g;
