@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <set>
 #include <climits>
+#include <map>
+#include <string>
 
 
 
@@ -20,46 +22,44 @@ we can use like a min heap and keep finding the smallest way to a encompass the 
 */
 // pretty close to geeks4geeks might need to change to queue
 struct graph {
-    // int weight;
+    int weight;
     int node;
-    int v = 1;
+    int v;
     set<int> visited;
     vector<int> dist;
     int mindist();
     int dijkstrasalgo();
-    void printSolution(int dist[], int n);
 };
 
 int graph::mindist()
 {
     
-    int min = INT_MAX, min_index;
+    int min = INT_MAX, minindex;
     int verti = 0;
     for (int i = 0; i < verti; i++)
     {
         if (visited.find(i) == visited.end() && dist[i] <= min)
         {
             min = dist[i];
-            min_index = i;
+            minindex = i;
         }
     }
-    return min_index;
+    printf("%d", minindex);
+    return minindex;
 }
 
 
-void graph::printSolution(int dist[], int n)
+void printSolution(int dist[], int n)
 {
-  printf("first the final distance, then hopefully the visited nodes\n");
-  for (int i = 0; i < n; i++)
-  {
-    printf("%d", dist[i]);
-    printf("%d", visited.count(i));
-  }
+    int v = n;
+    printf("Vertex   Distance from Source\n");
+    for (int i = 0; i < v; i++)
+        printf("\t%d \t\t\t\t %d\n", i, dist[i]);
 }
 
 int graph::dijkstrasalgo()
 {
-    int currentweight = 0;
+    int weight = 0;
     int start = 0;
     int end = 0;
     priority_queue<int> minqueue;
@@ -70,57 +70,96 @@ int graph::dijkstrasalgo()
     // update the distances of the nodes
     // use a priority queue to store the weights
     
-    // set distance of verts to infinity, then set initial distance to 0
+    // Initialize distances to all vertices as infinite and distance to the source as 0
     dist.resize(v, INT_MAX);
     dist[start] = 0;
 
-    // ideally finds the shortest path
+    // Find shortest path for all vertices
     for (int count = 0; count < v - 1; count++)
     {
-        // use mindist to find smallest distance of verticies that havent been visited, then set that to current index
+        // Pick the minimum distance vertex from the set of vertices not yet processed
         int u = mindist();
         visited.insert(u);
 
         // Update dist value of the adjacent vertices of the picked vertex
         for (int i = 0; i < v; i++)
-        {
+        {   // double check if this is correct
             // Update dist[i] if it is not in visited, there is an edge from u to i,
             // and total weight of path from start to i through u is smaller than current value of dist[i]
-            if (!visited.count(i) && dist[u] != INT_MAX && dist[u] + currentweight < dist[i])
+            if (!visited.count(i) && dist[u] != INT_MAX && dist[u] + weight < dist[i])
             {
-                dist[i] = dist[u] + currentweight;
+                dist[i] = dist[u] + weight;
             }
         }
     }
-
     // Print the constructed distance array
     printSolution(dist.data(), v);
-
-    
 }
-// has to be redone
+
+
+
+/*
+order of read in
+amount of pairs
+pairs
+graph(rows, columns)
+start row  start col
+target row target col
+*/
+
+
 int main(int argc, char *argv[])
 {
-    graph g;
-    int weight, n;
-    int graphx, graphy;
-    while (cin >> n)
+    // order of read in
+    int numpairs;
+    map<string, int> tilecosts;
+    int mapRows, mapCols;
+    vector<vector<string>> mapgrid;
+    int startRow, startCol, endRow, endCol;
+
+    // Read the number of tile types
+    cin >> numpairs;
+
+    // Read tile names and their costs
+    for (int i = 0; i < numpairs; i++)
     {
-        // dijsktrasalgo(n);
-        // cout << "Enter the number of nodes: " << n << endl;
-        // reads in number of types and store the weight of each node
-        cin >> n;
-        vector<pair<char, int>> nodes;
-        for (int i = 0; i < n; ++i)
-        {
-            char node;
-            int weight;
-            cin >> node >> weight;
-            nodes.push_back(make_pair(node, weight));
-            
-        }
-        cin >> graphx >> graphy;
-        g.dijkstrasalgo();
+        string tileName;
+        int tileCost;
+        cin >> tileName >> tileCost;
+        tilecosts[tileName] = tileCost;
     }
+
+    cin >> mapRows >> mapCols;
+
+    // Read the map grid
+    mapgrid.resize(mapRows, vector<string>(mapCols));
+    for (int i = 0; i < mapRows; i++)
+    {
+        for (int j = 0; j < mapCols; j++)
+        {
+            cin >> mapgrid[i][j];
+        }
+    }
+
+    // Read the start and end positions
+    cin >> startRow >> startCol >> endRow >> endCol;
+
+    // Create the graph
+    graph g;
+    g.v = mapRows * mapCols;
+    g.dist.resize(g.v, INT_MAX);
+
+    // adjancency list with directions
+    vector<pair<int, int>> directions;
+    directions.push_back(pair<int, int>(-1, 0));
+    directions.push_back(pair<int, int>(1, 0));
+    directions.push_back(pair<int, int>(0, -1));
+    directions.push_back(pair<int, int>(0, 1));
+
+    
+
+    // Call Dijkstra's algorithm
+    g.dijkstrasalgo();
+
     return 0;
 }
