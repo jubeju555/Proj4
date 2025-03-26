@@ -12,6 +12,11 @@
 #include <climits>
 #include <map>
 #include <string>
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> f7f4787 (progress from personal machine)
 
 using namespace std;
 // need something to store weights
@@ -30,7 +35,30 @@ struct graph
     int dijkstrasalgo();
 
 };
+<<<<<<< HEAD
 void printsolution(int dist[], int n)
+=======
+
+int graph::mindist()
+{
+    
+    int min = INT_MAX, minindex;
+    int verti = 0;
+    for (int i = 0; i < verti; i++)
+    {
+        if (visited.find(i) == visited.end() && dist[i] <= min)
+        {
+            min = dist[i];
+            minindex = i;
+        }
+    }
+    printf("%d", minindex);
+    return minindex;
+}
+
+
+void printSolution(int dist[], int n)
+>>>>>>> f7f4787 (progress from personal machine)
 {
     int v = n;
     printf("Vertex   Distance from Source\n");
@@ -75,13 +103,21 @@ int graph::dijkstrasalgo()
         visited[u] = true;
 
         for (int i = 0; i < v; i++)
+<<<<<<< HEAD
         {
             if (!visited[i] && distance[u] != INT_MAX && distance[u] + weight < distance[i])
+=======
+        {   // double check if this is correct
+            // Update dist[i] if it is not in visited, there is an edge from u to i,
+            // and total weight of path from start to i through u is smaller than current value of dist[i]
+            if (!visited.count(i) && dist[u] != INT_MAX && dist[u] + weight < dist[i])
+>>>>>>> f7f4787 (progress from personal machine)
             {
                 distance[i] = distance[u] + weight;
             }
         }
     }
+<<<<<<< HEAD
     printsolution(distance.data(), v);
 
     // int weight = 0;
@@ -124,20 +160,37 @@ int graph::dijkstrasalgo()
 
 /*
 - order of read in
+=======
+    // Print the constructed distance array
+    printSolution(dist.data(), v);
+}
+
+
+
+/*
+order of read in
+>>>>>>> f7f4787 (progress from personal machine)
 amount of pairs
 pairs
 graph(rows, columns)
 start row  start col
 target row target col
 */
+<<<<<<< HEAD
  
+=======
+>>>>>>> f7f4787 (progress from personal machine)
 
 
 int main(int argc, char *argv[])
 {
     // order of read in
     int numpairs;
+<<<<<<< HEAD
     map<string, int> travelcost;
+=======
+    map<string, int> tilecosts;
+>>>>>>> f7f4787 (progress from personal machine)
     int mapRows, mapCols;
     vector<vector<string>> mapgrid;
     int startRow, startCol, endRow, endCol;
@@ -151,13 +204,21 @@ int main(int argc, char *argv[])
         string tileName;
         int tileCost;
         cin >> tileName >> tileCost;
+<<<<<<< HEAD
         travelcost[tileName] = tileCost;
+=======
+        tilecosts[tileName] = tileCost;
+>>>>>>> f7f4787 (progress from personal machine)
     }
 
     cin >> mapRows >> mapCols;
 
     // Read the map grid
+<<<<<<< HEAD
     mapgrid.resize(mapRows * mapCols);
+=======
+    mapgrid.resize(mapRows, vector<string>(mapCols));
+>>>>>>> f7f4787 (progress from personal machine)
     for (int i = 0; i < mapRows; i++)
     {
         for (int j = 0; j < mapCols; j++)
@@ -181,6 +242,7 @@ int main(int argc, char *argv[])
     directions.push_back(pair<int, int>(0, -1));
     directions.push_back(pair<int, int>(0, 1));
 
+<<<<<<< HEAD
     // Create the graph
     // for (int i = i; i < mapRows; i++)
     // {
@@ -213,6 +275,9 @@ int main(int argc, char *argv[])
     //         }
     //     }
     // }
+=======
+    
+>>>>>>> f7f4787 (progress from personal machine)
 
     // Call Dijkstra's algorithm
     g.dijkstrasalgo();
