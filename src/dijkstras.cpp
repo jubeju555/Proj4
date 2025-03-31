@@ -41,12 +41,13 @@ void printsolution(int dist[], int n)
 
 int graph::mindist()
 {
-    
-    int min = INT_MAX, minindex;
-    int verti = 0;
+
+    int min = INT_MAX;
+    int minindex = -1;
+    int verti = distance.size();
     for (int i = 0; i < verti; i++)
     {
-        if (visited.find(i) == visited.end() && dist[i] <= min)
+        if (!visited[i] && dist[i] <= min)
         {
             min = dist[i];
             minindex = i;
@@ -162,10 +163,9 @@ int graph::dijkstrasalgo()
 - order of read in
 =======
     // Print the constructed distance array
-    printSolution(dist.data(), v);
+    // printsolution(dist.data(), v);
+    return 0;
 }
-
-
 
 /*
 order of read in
