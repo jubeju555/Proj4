@@ -86,26 +86,35 @@ int graph::mindist(vector<int> distance, vector<bool> visited)
 
 int graph::dijkstrasalgo()
 {
-    vector<int> distance;
-    vector<bool> visited;
-    int v = 0;
-    int start = 0;
-    for (int i = 0; i < v; i++)
-    {
-        distance.push_back(INT_MAX);
-        visited.push_back(false);
-    }
+    // Priority queue to store (distance, vertex) pairs, sorted by distance
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> min_pq;
 
+    vector<bool> visited(v, false);
+    vector<int> distance(v, INT_MAX);
+
+    int start = 0; // Assuming the start node is 0
     distance[start] = 0;
 
-    for (int current = 0; current < v - 1; current++)
+    // Push the start node into the priority queue
+    min_pq.push({0, start});
+
+    while (!min_pq.empty())
     {
-        int u = mindist(distance, visited);
+        // Extract the node with the smallest distance
+        int u = min_pq.top().second;
+        min_pq.pop();
+
+        // If the node is already visited, skip it
+        if (visited[u])
+            continue;
+
         visited[u] = true;
 
+        // Iterate through all neighbors of the current node
         for (int i = 0; i < v; i++)
 <<<<<<< HEAD
         {
+            // Check if there's an edge and the node is not visited
             if (!visited[i] && distance[u] != INT_MAX && distance[u] + weight < distance[i])
 =======
         {   // double check if this is correct
@@ -115,6 +124,9 @@ int graph::dijkstrasalgo()
 >>>>>>> f7f4787 (progress from personal machine)
             {
                 distance[i] = distance[u] + weight;
+
+                // Push the updated distance and node into the priority queue
+                min_pq.push({distance[i], i});
             }
         }
     }
