@@ -22,23 +22,22 @@ we can use like a min heap and keep finding the smallest way to a encompass the 
 struct graph
 {
     int weight = 0;
-    int node;
-    int v;
+    int node, v;
     int maprows, mapcols, startrow, startcol, endrow, endcol;
-    // set<int> visited;
     map<string, int> travelcost;
     vector<int> dist;
     vector<vector<int>> adjMatrix;
-    int mindist(vector<int> distance, vector<bool> visited);
-    int dijkstrasalgo();
     vector<vector<string>> mapgrid;
-};
-void printsolution(vector<int> &dist, vector<int> &parent, int start, int end, int mapcols)
-{
-    // Print the shortest distance to the goal
-    cout << dist[end] << endl;
 
-    // Reconstruct the path
+    // int mindist(vector<int> distance, vector<bool> visited);
+    int dijkstrasalgo();
+    void printsolution(vector<int> &dist, vector<int> &parent, int start, int end, int mapcols);
+};
+void graph::printsolution(vector<int> &dist, vector<int> &parent, int start, int end, int mapcols)
+{
+  
+
+    // path
     vector<pair<int, int>> path;
     int v = end;
     while (v != -1)
@@ -47,9 +46,24 @@ void printsolution(vector<int> &dist, vector<int> &parent, int start, int end, i
         int col = v % mapcols;
         path.push_back(make_pair(row, col));
         v = parent[v];
+        // debugging
+        // cout << v << endl;
     }
 
-    // Reverse and print the path
+  // distance
+    // cout << dist[end] << endl;
+    int totalCost = 0;
+    for (size_t i = 1; i < path.size(); i++)  // Skip the first node
+    {
+        int row = path[i].first;
+        int col = path[i].second;
+        string tile = mapgrid[row][col];
+        totalCost += travelcost[tile];
+    }
+
+    cout << totalCost << endl;
+
+    // path backwards
     reverse(path.begin(), path.end());
     for (size_t i = 0; i < path.size(); i++)
     {
@@ -57,24 +71,24 @@ void printsolution(vector<int> &dist, vector<int> &parent, int start, int end, i
     }
 }
 
-int graph::mindist(vector<int> distance, vector<bool> visited)
-{
+// int graph::mindist(vector<int> distance, vector<bool> visited)
+// {
 
-    int min = INT_MAX;
-    int minindex = -1;
-    int verti = distance.size();
-    for (int i = 0; i < verti; i++)
-    {
-        // holy shit use distand not dist
-        if (!visited[i] && distance[i] <= min)
-        {
-            min = distance[i];
-            minindex = i;
-        }
-    }
-    printf("%d", minindex);
-    return minindex;
-}
+//     int min = INT_MAX;
+//     int minindex = -1;
+//     int verti = distance.size();
+//     for (int i = 0; i < verti; i++)
+//     {
+//         // holy shit use distand not dist
+//         if (!visited[i] && distance[i] <= min)
+//         {
+//             min = distance[i];
+//             minindex = i;
+//         }
+//     }
+//     printf("%d", minindex);
+//     return minindex;
+// }
 
 int graph::dijkstrasalgo()
 {
@@ -117,12 +131,12 @@ int graph::dijkstrasalgo()
             int newrow = row + directions[i].first;
             int newcol = col + directions[i].second;
 
-            // Check if the neighbor is within bounds
+            // within bounds
             if (newrow >= 0 && newrow < maprows && newcol >= 0 && newcol < mapcols)
             {
                 int neighbor = newrow * mapcols + newcol;
 
-                // Calculate the weight  based on the graph 
+                // adds weights as it goes through graph
                 string tiletype = mapgrid[newrow][newcol];
                 if (travelcost.find(tiletype) != travelcost.end())
                 {
@@ -132,7 +146,7 @@ int graph::dijkstrasalgo()
                         dist[neighbor] = dist[u] + edgeWeight;
                         parent[neighbor] = u;
 
-                        // Push the updated distand node into the priority queue
+                        // add new node to pq
                         minpq.push(make_pair(dist[neighbor], neighbor));
                     }
                 }
@@ -144,7 +158,7 @@ int graph::dijkstrasalgo()
 }
 
 /*
-- order of read in
+(order of read in)
 amount of pairs
 pairs
 graph(rows, columns)
@@ -154,13 +168,13 @@ target row target col
 
 int main()
 {
+    // just use the graph, nothing else
     graph g;
 
-    // order of read in
     int numpairs;
     cin >> numpairs;
 
-    //  tile names and their` cost`s
+    //  tile names and their cost`s
     for (int i = 0; i < numpairs; i++)
     {
         string tileName;
@@ -188,9 +202,7 @@ int main()
     g.v = g.maprows * g.mapcols;
     g.dist.resize(g.v, INT_MAX);
 
-    // Call the Dijkstra's algorithm function
     g.dijkstrasalgo();
-    // g.printsolution(g.dist.data(), g.v);
 
     return 0;
 }
