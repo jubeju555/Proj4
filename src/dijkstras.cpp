@@ -24,19 +24,39 @@ struct graph
     int weight = 0;
     int node;
     int v;
+    int maprows, mapcols, startrow, startcol, endrow, endcol;
     // set<int> visited;
+    map<string, int> travelcost;
     vector<int> dist;
+    vector<vector<int>> adjMatrix;
     int mindist(vector<int> distance, vector<bool> visited);
     int dijkstrasalgo();
-
+    vector<vector<string>> mapgrid;
 };
-void printsolution(int dist[], int n)
+void printsolution(vector<int> &dist, vector<int> &parent, int start, int end, int mapcols)
 {
-    int v = n;
-    printf("Vertex   Distance from Source\n");
-    for (int i = 0; i < v; i++)
-        printf("\t%d       %d\n", i, dist[i]);
+    // Print the shortest distance to the goal
+    cout << dist[end] << endl;
+
+    // Reconstruct the path
+    vector<pair<int, int>> path;
+    int v = end;
+    while (v != -1)
+    {
+        int row = v / mapcols;
+        int col = v % mapcols;
+        path.push_back(make_pair(row, col));
+        v = parent[v];
+    }
+
+    // Reverse and print the path
+    reverse(path.begin(), path.end());
+    for (size_t i = 0; i < path.size(); i++)
+    {
+        cout << path[i].first << " " << path[i].second << endl;
+    }
 }
+
 int graph::mindist(vector<int> distance, vector<bool> visited)
 {
 
@@ -45,9 +65,10 @@ int graph::mindist(vector<int> distance, vector<bool> visited)
     int verti = distance.size();
     for (int i = 0; i < verti; i++)
     {
-        if (!visited[i] && dist[i] <= min)
+        // holy shit use distand not dist
+        if (!visited[i] && distance[i] <= min)
         {
-            min = dist[i];
+            min = distance[i];
             minindex = i;
         }
     }
@@ -57,45 +78,68 @@ int graph::mindist(vector<int> distance, vector<bool> visited)
 
 int graph::dijkstrasalgo()
 {
-    // Priority queue to store (distance, vertex) pairs, sorted by distance
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> min_pq;
+    // (distance, vertex) pairs, sorted by distance
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> minpq;
 
     vector<bool> visited(v, false);
-    vector<int> distance(v, INT_MAX);
+    dist.assign(v, INT_MAX);
 
-    int start = 0; // Assuming the start node is 0
-    distance[start] = 0;
+    int start = startrow * mapcols + startcol;
+    dist[start] = 0;
+    minpq.push(make_pair(0, start));
+    
+    int end = endrow * mapcols + endcol;
+    vector<int> parent(v, -1); 
 
-    // Push the start node into the priority queue
-    min_pq.push({0, start});
-
-    while (!min_pq.empty())
+    while (!minpq.empty())
     {
         // Extract the node with the smallest distance
-        int u = min_pq.top().second;
-        min_pq.pop();
+        pair<int, int> topElement = minpq.top();
+        int u = topElement.second;
+        minpq.pop();
 
-        // If the node is already visited, skip it
-        if (visited[u])
-            continue;
-
+        if (visited[u]) continue;
+        
         visited[u] = true;
 
-        // Iterate through all neighbors of the current node
-        for (int i = 0; i < v; i++)
-        {
-            // Check if there's an edge and the node is not visited
-            if (!visited[i] && distance[u] != INT_MAX && distance[u] + weight < distance[i])
-            {
-                distance[i] = distance[u] + weight;
+        // Calc row and column of current node
+        int row = u / mapcols;
+        int col = u % mapcols;
 
-                // Push the updated distance and node into the priority queue
-                min_pq.push({distance[i], i});
+        vector<pair<int, int>> directions;
+        directions.push_back(make_pair(-1, 0));
+        directions.push_back(make_pair(1, 0));
+        directions.push_back(make_pair(0, -1));
+        directions.push_back(make_pair(0, 1));
+
+        for (int i = 0; i < directions.size(); i++)
+        {
+            int newrow = row + directions[i].first;
+            int newcol = col + directions[i].second;
+
+            // Check if the neighbor is within bounds
+            if (newrow >= 0 && newrow < maprows && newcol >= 0 && newcol < mapcols)
+            {
+                int neighbor = newrow * mapcols + newcol;
+
+                // Calculate the weight  based on the graph 
+                string tiletype = mapgrid[newrow][newcol];
+                if (travelcost.find(tiletype) != travelcost.end())
+                {
+                    int edgeWeight = travelcost[tiletype];
+                    if (!visited[neighbor] && dist[u] != INT_MAX && dist[u] + edgeWeight < dist[neighbor])
+                    {
+                        dist[neighbor] = dist[u] + edgeWeight;
+                        parent[neighbor] = u;
+
+                        // Push the updated distand node into the priority queue
+                        minpq.push(make_pair(dist[neighbor], neighbor));
+                    }
+                }
             }
         }
     }
-
-    printsolution(distance.data(), v);
+    printsolution(dist, parent, start, end, mapcols);
     return 0;
 }
 
@@ -107,52 +151,46 @@ graph(rows, columns)
 start row  start col
 target row target col
 */
- 
 
-
-int main(int argc, char *argv[])
+int main()
 {
+    graph g;
+
     // order of read in
     int numpairs;
-    map<string, int> travelcost;
-    int mapRows, mapCols;
-    vector<vector<string>> mapgrid;
-    int startRow, startCol, endRow, endCol;
-
-    // Read the number of tile types
     cin >> numpairs;
 
-    // Read tile names and their costs
+    //  tile names and their` cost`s
     for (int i = 0; i < numpairs; i++)
     {
         string tileName;
         int tileCost;
         cin >> tileName >> tileCost;
-        travelcost[tileName] = tileCost;
+        g.travelcost[tileName] = tileCost;
     }
 
-    cin >> mapRows >> mapCols;
+    cin >> g.maprows >> g.mapcols;
 
-    // Read the map grid
-    mapgrid.resize(mapRows, vector<string>(mapCols));
-    for (int i = 0; i < mapRows; i++)
+    // Resize the map grid
+    g.mapgrid.resize(g.maprows, vector<string>(g.mapcols));
+    for (int i = 0; i < g.maprows; i++)
     {
-        for (int j = 0; j < mapCols; j++)
+        for (int j = 0; j < g.mapcols; j++)
         {
-            cin >> mapgrid[i][j];
+            cin >> g.mapgrid[i][j];
         }
     }
 
-    // Read the start and end positions
-    cin >> startRow >> startCol >> endRow >> endCol;
+    cin >> g.startrow >> g.startcol >> g.endrow >> g.endcol;
+    // cout << "Start Position: (" << startrow << ", " << startcol << ")" << endl;
+    // cout << "End Position: (" << endrow << ", " << endcol << ")" << endl;
 
-    // Create the graph
-    graph g;
-    g.v = mapRows * mapCols;
+    g.v = g.maprows * g.mapcols;
     g.dist.resize(g.v, INT_MAX);
 
     // Call the Dijkstra's algorithm function
     g.dijkstrasalgo();
+    // g.printsolution(g.dist.data(), g.v);
 
     return 0;
 }
