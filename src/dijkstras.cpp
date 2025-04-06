@@ -1,6 +1,11 @@
 // dijkstra's.cpp
-
-// Main Execution
+/*
+judah and keaton proj 4
+dijkstras algo
+finds the cheapest way to get from one way to another
+april 5 2025
+dr.emrich
+*/
 
 #include <iostream>
 #include <vector>
@@ -35,8 +40,6 @@ struct graph
 };
 void graph::printsolution(vector<int> &dist, vector<int> &parent, int start, int end, int mapcols)
 {
-  
-
     // path
     vector<pair<int, int>> path;
     int v = end;
@@ -51,7 +54,6 @@ void graph::printsolution(vector<int> &dist, vector<int> &parent, int start, int
     }
 
   // distance
-    // cout << dist[end] << endl;
     int totalCost = 0;
     for (size_t i = 1; i < path.size(); i++)  // Skip the first node
     {
@@ -70,25 +72,6 @@ void graph::printsolution(vector<int> &dist, vector<int> &parent, int start, int
         cout << path[i].first << " " << path[i].second << endl;
     }
 }
-
-// int graph::mindist(vector<int> distance, vector<bool> visited)
-// {
-
-//     int min = INT_MAX;
-//     int minindex = -1;
-//     int verti = distance.size();
-//     for (int i = 0; i < verti; i++)
-//     {
-//         // holy shit use distand not dist
-//         if (!visited[i] && distance[i] <= min)
-//         {
-//             min = distance[i];
-//             minindex = i;
-//         }
-//     }
-//     printf("%d", minindex);
-//     return minindex;
-// }
 
 int graph::dijkstrasalgo()
 {
@@ -200,7 +183,7 @@ int main()
     // cout << "End Position: (" << endrow << ", " << endcol << ")" << endl;
 
     g.v = g.maprows * g.mapcols;
-    g.dist.resize(g.v, INT_MAX);
+    // g.dist.resize(g.v, INT_MAX);
 
     g.dijkstrasalgo();
 
